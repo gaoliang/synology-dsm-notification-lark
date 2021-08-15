@@ -29,12 +29,10 @@ var LarkWebhookUrl string
 
 func init() {
 	LarkWebhookUrl = os.Getenv("LARK_WEBHOOK_URL")
-	log.Printf("init lark webhook url with : %s", LarkWebhookUrl)
 
 	_, err := url.ParseRequestURI(LarkWebhookUrl)
 	if err != nil {
 		log.Fatalf("LARK_WEBHOOK_URL '%s' is not a valid url", LarkWebhookUrl)
-		panic(err)
 	}
 	log.Printf("init lark webhook url with : %s", LarkWebhookUrl)
 }
