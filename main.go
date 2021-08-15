@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,7 +43,12 @@ func main() {
 	r := gin.Default()
 	r.POST("/lark", func(c *gin.Context) {
 		synologyRequest := SynologyWebHookRequest{}
-		c.BindJSON(&synologyRequest)
+		data, err := c.GetRawData()
+		jsonString := string(data)
+		fmt.Printf("request data: %v\n", jsonString)
+		// fix Synology test message fucking corrupted json format
+		jsonString = strings.ReplaceAll(jsonString, "\n", " ")
+		json.Unmarshal([]byte(jsonString), &synologyRequest)
 
 		larkRequest := LarkRequest{
 			MsgType: "text",
