@@ -4,7 +4,7 @@ mark Synology DSM notification webhook compatible with lark webhook
 
 将群晖的通知消息转发到飞书
 
-https://hub.docker.com/repository/docker/gaoliang/synology-dsm-notification-lark
+DockerHub: https://hub.docker.com/r/gaoliang/synology-dsm-notification-lark
 
 ### Usage
 1. start the conatainer 
