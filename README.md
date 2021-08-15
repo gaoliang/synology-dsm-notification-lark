@@ -12,4 +12,4 @@ https://hub.docker.com/repository/docker/gaoliang/synology-dsm-notification-lark
 docker run -d -p 10080:8080 -e LARK_WEBHOOK_URL=https://replace.with.your.lark.custom.bot.webbhook.url gaoliang/synology-dsm-notification-lark
 ```
 
-2. config DSM notification webhook, set webhook url to http://localhost:10080/lark and add a `content` field in http body.
+2. config DSM notification webhook, set webhook url to POST http://localhost:10080/lark and add a `content` field in http body.
