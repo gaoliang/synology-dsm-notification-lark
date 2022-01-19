@@ -1,6 +1,6 @@
 # Synology DSM notification lark
 
-mark Synology DSM notification webhook compatible with lark webhook
+Make Synology DSM notification webhook compatible with lark webhook
 
 将群晖的通知消息转发到飞书
 
