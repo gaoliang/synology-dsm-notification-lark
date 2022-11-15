@@ -39,7 +39,7 @@ var LarkSecret string
 
 func init() {
 	LarkWebhookUrl = os.Getenv("LARK_WEBHOOK_URL")
-	LarkSecret = os.Getenv("LARK_CRYPT_KEY")
+	LarkSecret = os.Getenv("LARK_SECRET")
 
 	_, err := url.ParseRequestURI(LarkWebhookUrl)
 	if err != nil {
