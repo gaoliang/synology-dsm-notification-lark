@@ -28,10 +28,14 @@ type LarkContent struct {
 }
 
 type LarkRequest struct {
-	Timestamp string      `json:"timestamp"`
-	Sign      string      `json:"sign"`
-	MsgType   string      `json:"msg_type"`
-	Content   LarkContent `json:"content"`
+	MsgType string      `json:"msg_type"`
+	Content LarkContent `json:"content"`
+}
+
+type LarkSecretRequest struct {
+	Timestamp string `json:"timestamp"`
+	Sign      string `json:"sign"`
+	LarkRequest
 }
 
 var LarkWebhookUrl string
@@ -63,7 +67,6 @@ func GenSign(secret string, timestamp int64) (string, error) {
 
 func main() {
 	r := gin.Default()
-	now := time.Now().Unix()
 	r.POST("/lark", func(c *gin.Context) {
 		synologyRequest := SynologyWebHookRequest{}
 		data, err := c.GetRawData()
@@ -72,16 +75,31 @@ func main() {
 		// fix Synology test message fucking corrupted json format
 		jsonString = strings.ReplaceAll(jsonString, "\n", " ")
 		json.Unmarshal([]byte(jsonString), &synologyRequest)
-		sign, _ := GenSign(LarkSecret, now)
+		encrypted := len(LarkSecret) > 0
+
 		larkRequest := LarkRequest{
-			Timestamp: strconv.FormatInt(now, 10),
-			Sign:      sign,
-			MsgType:   "text",
+			MsgType: "text",
 			Content: LarkContent{
 				Text: synologyRequest.Content,
 			},
 		}
-		jsonBody, _ := json.Marshal(larkRequest)
+		var larkSecretRequest LarkSecretRequest
+		if encrypted {
+			now := time.Now().Unix()
+			sign, _ := GenSign(LarkSecret, now)
+			larkSecretRequest = LarkSecretRequest{
+				Timestamp:   strconv.FormatInt(now, 10),
+				Sign:        sign,
+				LarkRequest: larkRequest,
+			}
+		}
+		var jsonBody []byte
+		if encrypted {
+			jsonBody, _ = json.Marshal(larkSecretRequest)
+
+		} else {
+			jsonBody, _ = json.Marshal(larkRequest)
+		}
 
 		resp, err := http.Post(LarkWebhookUrl,
 			"application/json",
